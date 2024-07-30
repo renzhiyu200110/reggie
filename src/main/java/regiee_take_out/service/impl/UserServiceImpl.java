@@ -30,8 +30,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Value("${spring.mail.username}")
     private String from;   // 邮件发送人
 
-    @Autowired
-    private JavaMailSender mailSender;
+//    @Autowired
+//    private JavaMailSender mailSender;
 
 
     /*public void sendMsg(String to, String subject, String context) {
