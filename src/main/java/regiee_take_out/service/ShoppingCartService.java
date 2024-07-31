@@ -6,4 +6,5 @@ import regiee_take_out.entity.ShoppingCart;
 
 public interface ShoppingCartService extends IService<ShoppingCart> {
 
+    void clean();
 }

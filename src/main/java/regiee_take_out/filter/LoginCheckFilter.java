@@ -30,7 +30,11 @@ public class LoginCheckFilter implements Filter {
         log.info("拦截到请求:{}", url);
 //        定义不需要处理的路径
         String[] urls = new String[]{"/employee/login", "/employee/logout", "/backend/**", "/front/**", "/common/**",
-                "/user/sendMsg", "/user/login"
+                "/user/sendMsg", "/user/login",                "/doc.html",
+                "/webjars/**",
+                "/swagger-resources",
+                "/v2/api-docs"
+
         };
 
 //            2判断本次请求是否需要处理

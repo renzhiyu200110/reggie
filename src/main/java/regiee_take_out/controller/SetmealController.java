@@ -103,12 +103,34 @@ public class SetmealController {
     }
 
     /**
+     * 对菜品批量或者是单个 进行停售或者是起售
+     *
+     * @return
+     */
+    @PostMapping("/status/{status}")
+//这个参数这里一定记得加注解才能获取到参数，否则这里非常容易出问题
+    public R<String> status(@PathVariable("status") Integer status, @RequestParam List<Long> ids) {
+        setMealService.updateSetmealStatusById(status, ids);
+        return R.success("售卖状态修改成功");
+    }
+    /**
+     * 回显套餐数据：根据套餐id查询套餐
+     * @return
+     */
+    @GetMapping("/{id}")
+    public R<SetmealDto> getData(@PathVariable Long id){
+        SetmealDto setmealDto = setMealService.getDate(id);
+
+        return R.success(setmealDto);
+    }
+
+    /**
      * 根据条件查询套餐数据
      *
      * @param setmeal
      * @return
      */
-    @Cacheable(value = "setmeal",key = "#setmeal.categoryId+'_'+#setmeal.status")
+    @Cacheable(value = "setmeal", key = "#setmeal.categoryId+'_'+#setmeal.status")
     @GetMapping("/list")
     public R<List<Setmeal>> listR(Setmeal setmeal) {
         LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();

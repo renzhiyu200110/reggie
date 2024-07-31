@@ -7,6 +7,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import regiee_take_out.common.CustomException;
 import regiee_take_out.dto.DishDto;
 import regiee_take_out.entity.Category;
 import regiee_take_out.entity.Dish;
@@ -27,7 +28,31 @@ import java.util.stream.Collectors;
 public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements DishService {
     @Autowired
     private DishFlavorService dishFlavorService;
+    /**
+     *套餐批量删除和单个删除
+     * @param ids
+     */
+    @Override
+    @Transactional
+    public void deleteByIds(List<Long> ids) {
 
+        //构造条件查询器
+        LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+        //先查询该菜品是否在售卖，如果是则抛出业务异常
+        queryWrapper.in(ids!=null,Dish::getId,ids);
+        List<Dish> list = this.list(queryWrapper);
+        for (Dish dish : list) {
+            Integer status = dish.getStatus();
+            //如果不是在售卖,则可以删除
+            if (status == 0){
+                this.removeById(dish.getId());
+            }else {
+                //此时应该回滚,因为可能前面的删除了，但是后面的是正在售卖
+                throw new CustomException("删除菜品中有正在售卖菜品,无法全部删除");
+            }
+        }
+
+    }
     /**
      * 新增菜品再保存口味
      *
